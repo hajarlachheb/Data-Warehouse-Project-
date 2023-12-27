@@ -1,0 +1,210 @@
+CREATE TABLE Districts (
+DistrictID tinyint NOT NULL,
+DistrictName NVARCHAR(50),
+RegionName NVARCHAR(50),
+PRIMARY KEY (DistrictID),
+)
+
+CREATE TABLE Regions (
+RegionID NVARCHAR(50),
+Region NVARCHAR(50),
+NoCities tinyint,
+NoInhabitants int,
+RatioUrbanInhabitants FLOAT,
+DistrictID tinyint,
+PRIMARY KEY (RegionID),
+FOREIGN KEY (DistrictID) REFERENCES Districts(DistrictID)
+)
+
+CREATE TABLE RegionsAnalysis (
+RegionAnalysisID INTEGER NOT NULL,
+RegionID NVARCHAR(50),
+AverageSalary smallint,
+RatioUrbanInhabitants FLOAT,
+DistrictID tinyint,
+[unemployement rate '95] float,
+[unemployement rate '96] float,
+[No of municipalities with inhabitants <499] tinyint,
+[No of municipalities with inhabitants 500 - 1999] tinyint,
+[No of municipalities with inhabitants 2000- 9999] tinyint,
+[No of municipalities with inhabitants > 10000] tinyint,
+[no. of entrepreneurs per 1000 inhabitants] tinyint,
+[no. of committed crimes '95] int,
+[no. of committed crimes '96] int,
+PRIMARY KEY (RegionAnalysisID),
+FOREIGN KEY (RegionID) REFERENCES Regions(RegionID)
+)
+
+CREATE TABLE Accounts (
+AccountID NVARCHAR(50),
+Frequency NVARCHAR(50),
+FullDate DATE,
+DistrictID tinyint,
+PRIMARY KEY (AccountID),
+FOREIGN KEY (DistrictID) REFERENCES Districts(DistrictID)
+)
+
+CREATE TABLE Clients (
+ClientID NVARCHAR(50) NOT NULL,
+Gender NVARCHAR(50),
+Age tinyint,
+Social NVARCHAR(50),
+FullName NVARCHAR(50),
+City NVARCHAR(50),
+State NVARCHAR(50),
+DistrictID tinyint,
+PRIMARY KEY (ClientID),
+FOREIGN KEY (DistrictID) REFERENCES Districts(DistrictID)
+)
+
+CREATE TABLE Dispositions (
+DispoID MONEY NOT NULL,
+ClientID NVARCHAR(50),
+AccountID NVARCHAR(50),
+PRIMARY KEY (DispoID),
+FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
+)
+
+CREATE TABLE Cartes (
+DispoID MONEY NOT NULL,
+CarteID NVARCHAR(50),
+City NVARCHAR(50),
+Type NVARCHAR(50),
+FullDate DATE,
+NoDays int,
+PRIMARY KEY (CarteID),
+FOREIGN KEY (DispoID) REFERENCES Dispositions(DispoID),
+)
+
+CREATE TABLE Loans (
+LoanID MONEY NOT NULL,
+AccountID NVARCHAR(50),
+Amount int,
+LoanDuration tinyint,
+PayementPerMonth smallint,
+FullDate DATE,
+LoanStatus NVARCHAR(50),
+LoanPurpose NVARCHAR(50),
+PRIMARY KEY (LoanID),
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID),
+)
+CREATE TABLE Orders (
+OrderID INTEGER NOT NULL,
+Amount FLOAT,
+K_SYMBOL NVARCHAR(50),
+PRIMARY KEY (OrderID),
+AccountID NVARCHAR(50),
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID))
+
+CREATE TABLE Transactions (
+TransID NVARCHAR(50) NOT NULL,
+AccountID NVARCHAR(50),
+LoanID MONEY,
+DistrictID tinyint,
+ClientID NVARCHAR(50),
+OrderID INT,
+RegionID NVARCHAR(50),
+RegionAnalysisID int,
+CarteID NVARCHAR(50),
+DispoID MONEY,
+Type NVARCHAR(50),
+Operation NVARCHAR(50),
+Amount FLOAT,
+Balance  FLOAT,
+FullDateTrans DATE,
+NoofDays int,
+LoanDuration tinyint,
+PayementPerMonth smallint,
+FullDate DATE,
+LoanStatus NVARCHAR(50),
+LoanPurpose NVARCHAR(50),
+PRIMARY KEY (TransID),
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID),
+FOREIGN KEY (DispoID) REFERENCES Dispositions(DispoID),
+FOREIGN KEY (LoanID) REFERENCES Loans(LoanID),
+FOREIGN KEY (DistrictID) REFERENCES Districts(DistrictID),
+FOREIGN KEY (RegionID) REFERENCES Regions(RegionID),
+FOREIGN KEY (RegionAnalysisID) REFERENCES RegionsAnalysis(RegionAnalysisID),
+FOREIGN KEY (CarteID) REFERENCES Cartes(CarteID),
+FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
+FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+)
+
+SELECT Accounts.account_id, Accounts.district_id, Accounts.frequency, Accounts.parseddate
+FROM     Accounts INNER JOIN
+                  Districts ON Accounts.district_id = Districts.DistrictCode
+
+
+CREATE TABLE BaseTable (
+BaseTableID smallint NOT NULL,
+TransID NVARCHAR(50),
+LoanID MONEY,
+AccountID NVARCHAR(50),
+DistrictID tinyint,
+ClientID NVARCHAR(50),
+OrderID INT,
+RegionID NVARCHAR(50),
+RegionAnalysisID int,
+CarteID NVARCHAR(50),
+DispoID MONEY,
+Type NVARCHAR(50),
+Operation NVARCHAR(50),
+Age FLOAT,
+Gender NVARCHAR(50),
+Transaction_SommePerAccount FLOAT, 
+Moyenne_Transaction_SommePerAccount FLOAT,
+Total_Nbr_Transaction FLOAT,
+Moyenne_Transaction_Household FLOAT,
+Moyenne_Transaction_Insurance FLOAT,
+Moyenne_Transaction_LoanPayment FLOAT,
+Moyenne_Transaction_OldAgePension FLOAT,
+Moyenne_Transaction_Statement FLOAT, 
+Moyenne_Transaction_UnknownTransaction FLOAT,
+Moyenne_Transaction_Credit FLOAT,
+Moyenne_Transaction_Withdrawal FLOAT,
+Nbr_Transaction_Household FLOAT, 
+Nbr_Transaction_Insurance FLOAT,
+Nbr_Transaction_LoanPayment FLOAT,
+Nbr_Transaction_OldAgePension FLOAT,
+Nbr_Transaction_Statement FLOAT, 
+Nbr_Transaction_UnknownTransaction FLOAT,
+Transaction_pourc9897 FLOAT,
+Transaction_pourc9796 FLOAT,
+Order_SommePerAccount FLOAT,
+Order_MoyennePerAccount FLOAT,
+Total_Nbr_Order FLOAT,
+Moyenne_Order_Household FLOAT,
+Moyenne_Order_Insurance FLOAT,
+Moyenne_Order_LoanPayment FLOAT,
+Moyenne_Order_Leasing FLOAT, 
+Moyenne_Order_UnknownOrderType FLOAT,
+Nbr_Order_Household FLOAT,
+Nbr_Order_Insurance FLOAT,
+Nbr_Order_LoanPayment FLOAT,
+Nbr_Order_Leasing FLOAT, 
+Nbr_Order_UnknownOrderType FLOAT,
+Amount_of_Loan FLOAT,
+Duration_of_Loan FLOAT,
+Balance  FLOAT,
+Full_Date_Transaction DATE,
+Loan_Duration tinyint,
+Frequency NVARCHAR(50),
+RegionName NVARCHAR(50),
+TypeDispo NVARCHAR(50),
+CardType NVARCHAR(50),
+Payement_Per_Month smallint,
+FullDate DATE,
+LoanStatus NVARCHAR(50),
+PRIMARY KEY (BaseTableID),
+FOREIGN KEY (TransID) REFERENCES Transactions(TransID),
+FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID),
+FOREIGN KEY (DispoID) REFERENCES Dispositions(DispoID),
+FOREIGN KEY (LoanID) REFERENCES Loans(LoanID),
+FOREIGN KEY (DistrictID) REFERENCES Districts(DistrictID),
+FOREIGN KEY (RegionID) REFERENCES Regions(RegionID),
+FOREIGN KEY (RegionAnalysisID) REFERENCES RegionsAnalysis(RegionAnalysisID),
+FOREIGN KEY (CarteID) REFERENCES Cartes(CarteID),
+FOREIGN KEY (ClientID) REFERENCES Clients(ClientID),
+FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+)
